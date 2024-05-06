@@ -1,12 +1,11 @@
-
 <div class="card card-no-top-rounded">
     <div class="card-header pb-0 px-3">
         <h6 class="mb-0">{{ __('Change Password') }}</h6>
     </div>
     <div class="card-body pt-4 p-3">
-        <form action="/user-edit-pass" method="post" role="form text-left">
+        <form action="/user-profile-pass" method="post" role="form text-left">
             @csrf
-        <input type="text" name="id" value="{{$data->id}}" hidden>
+        
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">

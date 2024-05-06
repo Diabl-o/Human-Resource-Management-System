@@ -114,7 +114,7 @@
                     <div class="form-group">
                         <label for="user.district" class="form-control-label">{{ __('District') }}<span class="small text-danger">*</span></label>
                         <div class="@error('user.district')border border-danger rounded-3 @enderror">
-                            <input class="form-control" type="text" placeholder="District" id="district" name="district" value="{{optional($data->permanentAddress)->district}}">
+                            <input class="form-control" type="text" placeholder="District" id="permanent_district" name="district" value="{{optional($data->permanentAddress)->district}}">
                         </div>
                             
                             @error('district')
@@ -127,7 +127,7 @@
                     <div class="form-group">
                         <label for="user-city" class="form-control-label">{{ __('VDC/Municipality') }}<span class="small text-danger">*</span></label>
                         <div class="@error('city')border border-danger rounded-3 @enderror">
-                            <input class="form-control" value="{{optional($data->permanentAddress)->city}}" type="text" placeholder="City" id="user-city" name="city">
+                            <input class="form-control" value="{{optional($data->permanentAddress)->city}}" type="text" placeholder="City" id="permanent_city" name="city">
                         </div>
                             @error('city')
                                     <p class="text-danger text-xs mt-2">{{ $message }}</p>
@@ -142,7 +142,7 @@
                     <div class="form-group">
                         <label for="user.tole" class="form-control-label">{{ __('Street Address') }}<span class="small text-danger">*</span></label>
                         <div class="@error('tole')border border-danger rounded-3 @enderror">
-                            <input class="form-control" type="text" placeholder="Tole" id="tole" name="tole" value="{{optional($data->permanentAddress)->tole}}">
+                            <input class="form-control" type="text" placeholder="Tole" id="permanent_tole" name="tole" value="{{optional($data->permanentAddress)->tole}}">
                         </div>
                             @error('tole')
                                     <p class="text-danger text-xs mt-2">{{ $message }}</p>
@@ -156,7 +156,7 @@
                     <div class="form-group">
                         <label for="user.ward_no" class="form-control-label">{{ __('Ward No') }}<span class="small text-danger">*</span></label>
                         <div class="@error('ward_no')border border-danger rounded-3 @enderror">
-                            <input class="form-control" type="text" placeholder="Ward No" id="ward_no" name="ward_no" value="{{optional($data->permanentAddress)->ward_no}}">
+                            <input class="form-control" type="text" placeholder="Ward No" id="permanent_ward_no" name="ward_no" value="{{optional($data->permanentAddress)->ward_no}}">
                         </div>
                             @error('ward_no')
                                     <p class="text-danger text-xs mt-2">{{ $message }}</p>
@@ -168,7 +168,7 @@
                     <div class="form-group">
                         <label for="user.zipcode" class="form-control-label">{{ __('Zip Code') }}<span class="small text-danger">*</span></label>
                         <div class="@error('zipcode')border border-danger rounded-3 @enderror">
-                            <input class="form-control" type="text" placeholder="Zip Code" id="zipcode" name="zipcode" value="{{optional($data->permanentAddress)->zipcode}}">
+                            <input class="form-control" type="text" placeholder="Zip Code" id="permanent_zipcode" name="zipcode" value="{{optional($data->permanentAddress)->zipcode}}">
                         </div>
                             @error('zipcode')
                                     <p class="text-danger text-xs mt-2">{{ $message }}</p>
@@ -180,7 +180,7 @@
                     <div class="form-group">
                         <label for="user.zone" class="form-control-label">{{ __('Zone') }}<span class="small text-danger">*</span></label>
                         <div class="@error('zone')border border-danger rounded-3 @enderror">
-                            <input class="form-control" type="text" placeholder="Zone" id="zone" name="zone" value="{{optional($data->permanentAddress)->zone}}">
+                            <input class="form-control" type="text" placeholder="Zone" id="permanent_zone" name="zone" value="{{optional($data->permanentAddress)->zone}}">
                         </div>
                         @error('zone')
                             <p class="text-danger text-xs mt-2">{{ $message }}</p>
@@ -188,6 +188,13 @@
                        
                     </div>
                 </div>
+            </div>
+
+            <div class="form-check pl-5">
+                <input class="form-check-input" type="checkbox" value="" id="copyAddressCheckbox">
+                <label class="form-check-label" for="flexCheckDefault">
+                  Same as temporary address
+                </label>
             </div>
         
             <div class="d-flex justify-content-end">
@@ -345,6 +352,7 @@
                     </div>
                 </div>
             </div>
+            
             <div class="d-flex justify-content-end">
                 <button type="submit" class="btn bg-gradient-dark btn-md mt-4 mb-4">{{ 'Save Changes' }}</button>
             </div>

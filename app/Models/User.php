@@ -78,6 +78,11 @@ class User extends Authenticatable
         return $this->hasOne(Bank_detail::class, 'u_id');
     }
 
+    public function officeHours()
+    {
+        return $this->hasMany(Office_hour::class,'u_id');
+    }
+
 
     
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\InfoUserController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ResetController;
 use App\Http\Controllers\SessionsController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserDataListController;
 use App\Http\Controllers\UserEditController;
 use Illuminate\Http\Request;
@@ -56,11 +57,18 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('/user-edit-img', [UserEditController::class, 'UpdateUserImage'])->name('user-edit-image');
 	Route::get('/add-user',[AddUserController::class, 'showPage'])->name('add-user');
 	Route::post('/add-user-add',[AddUserController::class, 'adduser'])->name('add-user-submit');
+
 	Route::post('/user-edit-temp', [UserEditController::class, 'UpdateUserTemp'])->name('user-edit-temp');
 	Route::post('/user-edit-per', [UserEditController::class, 'UpdateUserPer'])->name('user-edit-per');
 	Route::post('/user-edit-em', [UserEditController::class, 'UpdateUserEm'])->name('user-edit-em');
 	Route::post('/user-edit-emadd', [UserEditController::class, 'UpdateUserEmadd'])->name('user-edit-emadd');
 	Route::post('/user-edit-bank', [UserEditController::class, 'UpdateUserBank'])->name('user-edit-bank');
+	Route::post('/user-edit-pass', [UserEditController::class, 'UpdateUserPass'])->name('user-edit-pass');
+	Route::post('/user-edit-office', [UserEditController::class, 'UpdateUserOffice'])->name('user-edit-office');
+
+
+	Route::get('/task-management',[TaskController::class, 'show'])->name('task-management');
+	Route::get('/add-task',[TaskController::class, 'addTask'])->name('add-task');
 
 	Route::get('tables', function () {
 		return view('tables');
@@ -80,7 +88,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/logout', [SessionsController::class, 'destroy']);
 	Route::get('/user-profile', [InfoUserController::class, 'create']);
-	Route::post('/user-profile', [InfoUserController::class, 'store']);
+	Route::post('/user-profile-pass', [InfoUserController::class, 'UpdateProfilePass']);
 	Route::post('/Image_edit',[InfoUserController::class,'uploadImage'])->name('edit_image');
     Route::get('/login', function () {
 		return view('dashboard');

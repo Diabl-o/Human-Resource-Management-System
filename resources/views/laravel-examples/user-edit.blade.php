@@ -3,7 +3,7 @@
 
 @section('data1')
 
-{{$name='-'.$data->first_name}}
+{{$name='-'.optional($data)->first_name}}
 
 @endsection
 
@@ -107,6 +107,90 @@
     e.preventDefault();
     $(this).tab('show');
 });
+
+
+
+
+function toggleStartElements(days) {
+    days = Array.isArray(days) ? days : [days];
+
+    
+    days.forEach(function(day) {
+        var startElements = document.querySelectorAll('#start_'+day);
+        var checkbox = document.querySelector('#checkbox'+day);
+
+        startElements.forEach(function(startElement) {
+            if (startElement) {
+            if (checkbox.checked) {
+                startElement.style.display = 'none';
+            } else {
+                startElement.style.display = 'block';
+            }
+            }
+        });
+    });
+        
+    
+}
+
+
+window.onload = function() {
+    // Select all checkboxes with class 'form-check-input'
+    const checkboxes = document.querySelectorAll('.form-check-input');
+    const days = [];
+    
+    checkboxes.forEach(function(checkbox) {
+        
+        const day = checkbox.id.replace('checkbox', '');
+        days.push(day);
+        
+        
+    });
+    toggleStartElements(days);
+};
+
+
+
+    
+        const checkbox = document.getElementById('copyAddressCheckbox');
+        const tempDistrict = document.getElementById('district');
+        const tempCity = document.getElementById('user-city');
+        const tempTole = document.getElementById('tole');
+        const tempWardNo = document.getElementById('ward_no');
+        const tempZipCode = document.getElementById('zipcode');
+        const tempZone = document.getElementById('zone');
+
+        const permanentDistrict = document.getElementById('permanent_district');
+        const permanentCity = document.getElementById('permanent_city');
+        const permanentTole = document.getElementById('permanent_tole');
+        const permanentWardNo = document.getElementById('permanent_ward_no');
+        const permanentZipCode = document.getElementById('permanent_zipcode');
+        const permanentZone = document.getElementById('permanent_zone');
+
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                // Copy temporary address to permanent address
+                permanentDistrict.value = tempDistrict.value;
+                permanentCity.value = tempCity.value;
+                permanentTole.value = tempTole.value;
+                permanentWardNo.value = tempWardNo.value;
+                permanentZipCode.value = tempZipCode.value;
+                permanentZone.value = tempZone.value;
+            } else {
+                // Clear permanent address fields if unchecked
+                permanentDistrict.value = '';
+                permanentCity.value = '';
+                permanentTole.value = '';
+                permanentWardNo.value = '';
+                permanentZipCode.value = '';
+                permanentZone.value = '';
+            }
+        });
+   
+
+
 </script>
+
+
 
 @endsection

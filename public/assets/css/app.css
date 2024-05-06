@@ -20,3 +20,15 @@
  .card_hr{
   margin: 0px;
 }
+
+
+.form-check{
+  margin-top: 0.2rem;
+}
+
+
+.closebutton{
+  border: none;
+  background-color: inherit;
+  font-size: x-large;
+}

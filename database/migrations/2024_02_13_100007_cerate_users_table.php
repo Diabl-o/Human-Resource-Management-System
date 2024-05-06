@@ -24,7 +24,9 @@ return new class extends Migration
         $table->string('phone2',11)->nullable();
         $table->unsignedBigInteger('blood_group_id')->nullable();
         $table->string('health_condition',255)->nullable();
-        $table->unsignedBigInteger('position_id')->nullable();          
+        $table->unsignedBigInteger('position_id')->nullable();
+        $table->float('salary')->nullable();
+        $table->timestamp('contract_expiry')->nullable();          
         $table->binary('image_blob')->nullable();
         $table->string('image_type')->nullable();
         $table->string('password');

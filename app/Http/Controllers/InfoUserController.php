@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\View;
+use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Str;
 
 class InfoUserController extends Controller
 {
@@ -16,44 +18,63 @@ class InfoUserController extends Controller
         return view('laravel-examples/user-profile');
     }
 
-    public function store(Request $request)
-    {
+    public function UpdateProfilePass(Request $request){
 
-        $attributes = request()->validate([
-            'first_name' => ['required', 'max:50','alpha'],
-            'last_name' => ['required', 'max:50','alpha'],
-            'email' => ['required', 'email', 'max:50', Rule::unique('users')->ignore(Auth::user()->id)],
-            'phone'     => ['nullable','digits:10','numeric'],
-            
+        $user = User::find(auth()->user()->id);
+        
+
+        $Validated = $request->validate([
+            'password'=>['required', Password::min(8)
+            ->mixedCase()
+            ->numbers()
+            ->symbols()
+            ,],
+
+            'new_password'=>['required', Password::min(8)
+            ->mixedCase()
+            ->numbers()
+            ->symbols()
+            ,],
+            'confirm_password'=>['required','same:new_password', Password::min(8)
+            ->mixedCase()
+            ->numbers()
+            ->symbols()
+            ,],
+
         ]);
-        if($request->get('email') != Auth::user()->email)
-        {
-            if(env('IS_DEMO') && Auth::user()->id == 1)
-            {
-                return redirect()->back()->withErrors(['msg2' => 'You are in a demo version, you can\'t change the email address.']);
+
+
+        if(password_verify($Validated['password'],$user->password)){
+            $newhash = bcrypt($Validated['new_password'] );
+
+
+            $user->password = $newhash;
+            $user->setRememberToken(Str::random(60));
+            
+            if ($user->save()) {
+                return redirect('/user-profile')->with('success','Password updated successfully');
+            } else {
+                return redirect('/user-profile')->with('danger', 'Failed to update password. Please try again.');
                 
             }
-            
+
+
         }
         else{
-            $attribute = request()->validate([
-                'email' => ['required', 'email', 'max:50', Rule::unique('users')->ignore(Auth::user()->id)],
-            ]);
+
+            return redirect('/user-profile')->with('danger', 'Incorrect current password. Please try again.');
+                
+
+            
+                
+            
         }
-        
-        
-        $users = User::find(auth()->user()->id);
-        $users->first_name = $attributes['first_name'];
-        $users->last_name = $attributes['last_name'];
-        $users->email = $attributes['email'];
-        $users->phone1 = $attributes['phone'];
-        $users->save();
-
-        
 
 
-        return redirect('/user-profile')->with('success','Profile updated successfully');
+
     }
+
+   
 
 
     public function uploadImage(Request $request)

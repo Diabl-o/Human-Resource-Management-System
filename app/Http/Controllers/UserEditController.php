@@ -5,19 +5,29 @@ namespace App\Http\Controllers;
 use App\Models\Address;
 use App\Models\Bank_detail;
 use App\Models\Emergency_contact;
+use App\Models\Office_hour;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class UserEditController extends Controller
 {
     public function ShowUser(Request $request){
 
+
+        $daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
         $id = $request->input('id');
 
-        $user=User::with('position')->with('temporaryAddress')->with('permanentAddress')->find($id);
+        $user=User::with('position')->with('officeHours')->with('temporaryAddress')->with('permanentAddress')->find($id);
 
-         return view('laravel-examples.user-edit',['data'=>$user]);
+        return view('laravel-examples.user-edit', [
+            'data' => $user,
+            'daysOfWeek' => $daysOfWeek,
+        ]);
     }
 
     public function UpdateUserImage(Request $request){
@@ -249,6 +259,126 @@ class UserEditController extends Controller
 
     }
 
+
+    public function UpdateUserPass(Request $request){
+
+        $id = $request->input('id');
+        $user=User::with('position')->find($id);
+
+        $Validated = $request->validate([
+            'password'=>['required', Password::min(8)
+            ->mixedCase()
+            ->numbers()
+            ->symbols()
+            ,],
+
+            'new_password'=>['required', Password::min(8)
+            ->mixedCase()
+            ->numbers()
+            ->symbols()
+            ,],
+            'confirm_password'=>['required','same:new_password', Password::min(8)
+            ->mixedCase()
+            ->numbers()
+            ->symbols()
+            ,],
+
+        ]);
+
+
+        if(password_verify($Validated['password'],$user->password)){
+            $newhash = bcrypt($Validated['new_password'] );
+
+
+            $user->password = $newhash;
+            $user->setRememberToken(Str::random(60));
+            
+            if ($user->save()) {
+                return redirect()->route('user-edit', ['id' => $user->id])
+                    ->with('success', 'Password updated successfully!');
+            } else {
+                return redirect()->route('user-edit', ['id' => $user->id])
+                    ->with('danger', 'Failed to update password. Please try again.');
+            }
+
+
+        }
+        else{
+
+            
+                return redirect()->route('user-edit', ['id' => $user->id])
+                    ->with('danger', 'Incorrect current password. Please try again.');
+            
+        }
+
+
+
+    }
+
+
+    public function UpdateUserOffice(Request $request){
+
+        $id = $request->input('id');
+        $user=User::with('position')->find($id);
+
+        $daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        $Validated=$request->validate([
+           
+            'position'=>'required|in:1,2,3,4',
+            'salary' =>'required|decimal:0,2'
+        ]);
+
+
+        User::where('id',$user->id)
+        ->update([
+            'position_id'=>$Validated['position'],
+            'salary' =>$Validated['salary']
+
+        ]);
+
+
+
+
+        foreach ($daysOfWeek as $day) {
+            $validatedData = $request->validate([
+                'office_hours_start.'.$day => 'nullable|date_format:H:i',
+                'office_hours_end.'.$day => 'nullable|after:office_hours_start.'.$day,
+                'cbox.'.$day => 'boolean',
+            ]);
+
+            if(isset($validatedData['cbox'][$day])){
+                $officeHour = Office_hour::updateOrCreate(
+                    ['u_id' => $user->id, 'day_of_week' => $day],
+                    [
+                        'u_id' => $user->id,
+                        'day_of_week' => $day,
+                        'start_time' => null,
+                        'end_time' => null,
+                        'closed'=>  1,
+                    ]
+                );
+
+            }
+            else{
+            $officeHour = Office_hour::updateOrCreate(
+                ['u_id' => $user->id, 'day_of_week' => $day],
+                [
+                    'u_id' => $user->id,
+                    'day_of_week' => $day,
+                    'start_time' => $validatedData['office_hours_start'][$day],
+                    'end_time' => $validatedData['office_hours_end'][$day],
+                    'closed'=> 0,
+                ]
+            );
+            }
+        }
+
+        return redirect()->route('user-edit', ['id' => $user->id])
+        ->with('success', 'Profile updated successfully!');
+    
+
+    }
 
 
 
